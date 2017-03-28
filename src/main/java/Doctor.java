@@ -43,8 +43,16 @@ public class Doctor {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "INSERT INTO doctors(name, specialty) Value (:name, :specialty);";
+      String sql = "INSERT INTO doctors(name, specialty) VALUES (:name, :specialty);";
       this.id = (int) con.createQuery(sql, true).addParameter("name", this.name).addParameter("specialty", this.specialty).executeUpdate().getKey();
+    }
+  }
+
+  public static Doctor find(int id) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT * FROM doctors WHERE id=:id;";
+      Doctor doctor = con.createQuery(sql).addParameter("id", id).executeAndFetchFirst(Doctor.class);
+      return doctor;
     }
   }
 }
