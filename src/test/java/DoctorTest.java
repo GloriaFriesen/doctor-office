@@ -2,6 +2,9 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import org.sql2o.*;
 import java.util.Arrays;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class DoctorTest {
 
@@ -84,5 +87,17 @@ public class DoctorTest {
     testDoctor.save();
     Doctor savedDoctor = Doctor.all().get(0);
     assertEquals(testDoctor.getId(), savedDoctor.getId());
+  }
+
+  @Test
+  public void getPatients_retrievesAllPatientsFromDB_patientsList() throws ParseException {
+    Doctor testDoctor = new Doctor("Dr. Gloria", "child psychology");
+    testDoctor.save();
+    Patient firstPatient = new Patient("Gloria", new SimpleDateFormat("MM/dd/yyyy").parse("08/16/2011"), testDoctor.getId());
+    firstPatient.save();
+    Patient secondPatient = new Patient("Blake", new SimpleDateFormat("MM/dd/yyyy").parse("11/11/2011"), testDoctor.getId());
+    secondPatient.save();
+    Patient[] patients = new Patient[] { firstPatient, secondPatient };
+    assertTrue(testDoctor.getPatients().containsAll(Arrays.asList(patients)));
   }
 }
